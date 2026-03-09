@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oázis – Megrendelés</title>
+  <style>
+    :root{--bg:#f6f8f3;--surface:#fff;--text:#1f2937;--muted:#6b7280;--primary:#2f7d32;--primary-dark:#256628;--accent:#dff1d8;--border:#e5e7eb;--shadow:0 18px 40px rgba(16,24,40,.08);--radius:24px}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#f6f8f3 0%,#edf5e9 100%);color:var(--text)} .container{width:min(1000px,calc(100% - 32px));margin:0 auto}.field,button,select,textarea{font:inherit}
+    header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(246,248,243,.82);border-bottom:1px solid rgba(229,231,235,.7)}.header-inner{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.brand{display:flex;gap:14px;align-items:center;font-weight:800}.brand-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4caf50,#2f7d32);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow)}.brand-text small{display:block;color:var(--muted);font-weight:600}.nav-links{display:flex;gap:10px;flex-wrap:wrap}.nav-link{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:12px 16px;text-decoration:none}.nav-link.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    main{padding:48px 0 80px}.section-head{margin-bottom:20px}.section-head h1{font-size:clamp(32px,5vw,52px);margin:0 0 8px}.section-head p{margin:0;color:var(--muted);line-height:1.7}.card{background:#fff;border:1px solid rgba(229,231,235,.85);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.card-body{padding:24px;display:grid;gap:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{width:100%;border:1px solid var(--border);border-radius:14px;padding:13px 14px;background:#fff;color:var(--text)}.primary-btn,.ghost-btn{border:none;border-radius:14px;padding:14px 16px;font-weight:700;cursor:pointer}.primary-btn{background:var(--primary);color:#fff}.ghost-btn{background:transparent;border:1px solid var(--border);color:var(--text)}.summary,.line{border:1px solid var(--border);border-radius:18px;padding:16px;background:#fcfdfb}.line-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.muted{color:var(--muted)}.empty{padding:24px;border-radius:18px;text-align:center;background:#fafcf9;border:1px dashed var(--border);color:var(--muted)}
+    @media (max-width:720px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand"><div class="brand-badge">🥬</div><div class="brand-text"><strong>Oázis</strong><small>Megrendelés</small></div></div>
+      <nav class="nav-links">
+        <a class="nav-link" href="index.html">Webshop</a>
+        <a class="nav-link active" href="megrendeles.html">Megrendelés</a>
+        <a class="nav-link" href="fiokom.html">Fiókom</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="section-head">
+      <h1>Megrendelési űrlap</h1>
+      <p>Külön oldalra szedve. Nincs benne születési idő, mert itt tényleg semmi dolga.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div id="cartSummary"></div>
+        <div class="grid">
+          <input class="field" type="text" id="orderName" placeholder="Név" />
+          <input class="field" type="tel" id="orderPhone" placeholder="Telefonszám" />
+          <input class="field" type="date" id="orderDate" />
+          <input class="field" type="time" id="orderTime" />
+          <select class="field" id="orderPayment">
+            <option value="">Fizetési mód kiválasztása</option>
+            <option>Készpénz átvételkor</option>
+            <option>Bankkártya átvételkor</option>
+          </select>
+          <select class="field" id="orderPickupType">
+            <option value="">Átvétel típusa</option>
+            <option>Személyes átvétel</option>
+            <option>Helyi kiszállítás</option>
+          </select>
+        </div>
+        <textarea class="field" id="orderNote" rows="4" placeholder="Megjegyzés a rendeléshez"></textarea>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="primary-btn" id="submitOrderTestBtn" type="button">Teszt rendelés leadása</button>
+          <a class="ghost-btn" href="index.html" style="text-decoration:none;text-align:center">Vissza a webshopba</a>
+        </div>
+        <div class="summary" id="orderTestResult">Itt fog megjelenni a teszt rendelés összefoglalója.</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY='oazis_demo_state_v1';
+    const DEMO_ACCOUNT_KEY='oazis_demo_account_v1';
+    function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return {}}}
+    function formatPrice(v){return new Intl.NumberFormat('hu-HU').format(Math.round(v))+' Ft'}
+    const state=loadState();
+    const cart=state.cart||[];
+    const appliedCoupon=state.appliedCoupon||null;
+    const cartSummary=document.getElementById('cartSummary');
+
+    function getSubtotal(){return cart.reduce((sum,item)=>sum+item.basePrice,0)}
+    function getDiscount(){return appliedCoupon?Math.round(getSubtotal()*(appliedCoupon.discountPercent/100)):0}
+    function getTotal(){return Math.max(0,getSubtotal()-getDiscount())}
+
+    function renderCartSummary(){
+      if(!cart.length){cartSummary.innerHTML='<div class="empty">A kosár üres. Előbb rakj bele valamit a webshop oldalon.</div>'; return;}
+      cartSummary.innerHTML=`${cart.map(item=>`<div class="line"><div class="line-top"><div><strong>${item.name}</strong><div class="muted">${item.items.map(p=>`${p.name} (${p.qty})`).join(', ')}</div></div><strong>${formatPrice(item.basePrice)}</strong></div></div>`).join('')}<div class="line"><div class="line-top"><span>Részösszeg</span><strong>${formatPrice(getSubtotal())}</strong></div><div class="line-top"><span>Kedvezmény</span><strong>- ${formatPrice(getDiscount())}</strong></div><div class="line-top"><strong>Végösszeg</strong><strong>${formatPrice(getTotal())}</strong></div></div>`;
+    }
+
+    function submitOrderTest(){
+      const name=document.getElementById('orderName').value.trim();
+      const phone=document.getElementById('orderPhone').value.trim();
+      const date=document.getElementById('orderDate').value;
+      const time=document.getElementById('orderTime').value;
+      const payment=document.getElementById('orderPayment').value;
+      const pickupType=document.getElementById('orderPickupType').value;
+      const note=document.getElementById('orderNote').value.trim()||'Nincs megjegyzés';
+      const output=document.getElementById('orderTestResult');
+      if(!cart.length){output.innerHTML='A kosár üres.'; return;}
+      if(!name||!phone||!date||!time||!payment||!pickupType){output.innerHTML='Tölts ki minden kötelező mezőt.'; return;}
+      const summary=cart.map(item=>`${item.name} (${formatPrice(item.basePrice)})`).join(', ');
+      output.innerHTML=`<strong style="display:block;margin-bottom:10px">Teszt rendelés rögzítve</strong><div><strong>Név:</strong> ${name}</div><div><strong>Telefonszám:</strong> ${phone}</div><div><strong>Átvétel:</strong> ${date} ${time}</div><div><strong>Fizetés:</strong> ${payment}</div><div><strong>Típus:</strong> ${pickupType}</div><div><strong>Kosár:</strong> ${summary}</div><div><strong>Kupon:</strong> ${appliedCoupon?appliedCoupon.code:'nincs'}</div><div><strong>Végösszeg:</strong> ${formatPrice(getTotal())}</div><div><strong>Megjegyzés:</strong> ${note}</div>`;
+      const account=JSON.parse(localStorage.getItem(DEMO_ACCOUNT_KEY)||'{"previousOrders":[]}');
+      account.lastOrderPreview={name,phone,date,time,payment,pickupType,note,total:getTotal(),items:cart};
+      localStorage.setItem(DEMO_ACCOUNT_KEY,JSON.stringify(account));
+    }
+
+    renderCartSummary();
+    document.getElementById('submitOrderTestBtn').addEventListener('click',submitOrderTest);
+  </script>
+</body>
+</html>
