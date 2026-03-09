@@ -154,45 +154,38 @@
     window.openEditPanel=openEditPanel; window.changeQty=changeQty; window.removeItem=removeItem; window.addNewProduct=addNewProduct; window.addTemplateToCart=addTemplateToCart; window.removeCartItem=removeCartItem; window.changeCustomBasketQty=changeCustomBasketQty; window.removeCustomBasketItem=removeCustomBasketItem; window.selectSuggestedProduct=selectSuggestedProduct;
   </script>
 <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyABn9iac_S2Hb3U1YkkzTJ20tDai0qGreY",
+    authDomain: "oazis-wwebshop.firebaseapp.com",
+    projectId: "oazis-wwebshop",
+    storageBucket: "oazis-wwebshop.firebasestorage.app",
+    messagingSenderId: "245724309642",
+    appId: "1:245724309642:web:1b78b3f9d616f1a3cd6573"
+  };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyABn9iac_S2Hb3U1YkkzTJ20tDai0qGreY",
-  authDomain: "oazis-wwebshop.firebaseapp.com",
-  projectId: "oazis-wwebshop",
-  storageBucket: "oazis-wwebshop.firebasestorage.app",
-  messagingSenderId: "245724309642",
-  appId: "1:245724309642:web:1b78b3f9d616f1a3cd6573"
-};
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
+  console.log("Firebase működik 🚀");
 
-const auth = getAuth(app);
-const db = getFirestore(app);
+  document.getElementById("submitOrderTestBtn").addEventListener("click", async () => {
+    try {
+      await addDoc(collection(db, "orders"), {
+        test: "Ez egy teszt rendelés",
+        createdAt: new Date().toISOString()
+      });
 
-console.log("Firebase működik 🚀");
-document.getElementById("submitOrderTestBtn").addEventListener("click", async () => {
-
-  try {
-
-    await addDoc(collection(db, "orders"), {
-      test: "Ez egy teszt rendelés",
-      createdAt: new Date().toISOString()
-    });
-
-    alert("Rendelés elmentve Firebase-be 🚀");
-
-  } catch (error) {
-
-    console.error(error);
-    alert("Hiba történt");
-
-  }
-
-});
+      alert("Rendelés elmentve Firebase-be 🚀");
+    } catch (error) {
+      console.error("Firebase hiba:", error);
+      alert("Hiba történt: " + error.message);
+    }
+  });
 </script>
   
 </body>
