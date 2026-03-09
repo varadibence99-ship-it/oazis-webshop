@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oázis Webshop</title>
+  <style>
+    :root{--bg:#f6f8f3;--surface:#fff;--surface-2:#eef4e9;--text:#1f2937;--muted:#6b7280;--primary:#2f7d32;--primary-dark:#256628;--accent:#dff1d8;--border:#e5e7eb;--danger:#b42318;--shadow:0 18px 40px rgba(16,24,40,.08);--radius:24px}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#f6f8f3 0%,#edf5e9 100%);color:var(--text)}
+    .container{width:min(1180px,calc(100% - 32px));margin:0 auto}.field,button{font:inherit}
+    header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(246,248,243,.82);border-bottom:1px solid rgba(229,231,235,.7)}
+    .header-inner{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.brand{display:flex;gap:14px;align-items:center;font-weight:800}.brand-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4caf50,#2f7d32);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow)}
+    .brand-text small{display:block;color:var(--muted);font-weight:600}.header-actions,.nav-links{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.nav-link,.icon-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:12px 16px;text-decoration:none;display:inline-flex;gap:10px;align-items:center;cursor:pointer}.nav-link.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .badge{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+    .hero{padding:72px 0 28px;text-align:center}.eyebrow{display:inline-block;background:var(--accent);color:var(--primary-dark);padding:10px 14px;border-radius:999px;font-weight:700;font-size:14px;margin-bottom:18px} h1{font-size:clamp(34px,5vw,62px);line-height:1;margin:0;letter-spacing:-.04em}.hero p{max-width:720px;margin:18px auto 0;color:var(--muted);font-size:18px;line-height:1.7}
+    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;padding:30px 0 70px}.card{background:var(--surface);border:1px solid rgba(229,231,235,.85);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}.card-top{padding:24px;background:linear-gradient(180deg,#f6fbf3 0%,#fff 100%);border-bottom:1px solid var(--border)}.card-tag{display:inline-block;padding:8px 12px;border-radius:999px;background:var(--surface-2);color:var(--primary-dark);font-size:13px;font-weight:700;margin-bottom:14px}.card h2{margin:0;font-size:24px}.card-desc{margin:10px 0 0;color:var(--muted);min-height:48px;line-height:1.55;font-size:15px}.card-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:18px;flex:1}.price{font-size:30px;font-weight:800}.price-note{color:var(--muted);font-size:14px}.preview-list{margin:0;padding:0;list-style:none;display:grid;gap:10px}.preview-list li{display:flex;justify-content:space-between;gap:12px;background:#fafcf9;border:1px solid #edf0ea;border-radius:12px;padding:11px 12px;font-size:14px}.card-actions{display:grid;gap:10px;margin-top:auto}
+    .primary-btn,.secondary-btn,.ghost-btn,.remove-btn,.qty-btn{border:none;border-radius:14px;padding:14px 16px;font-weight:700;cursor:pointer}.primary-btn{background:var(--primary);color:#fff}.secondary-btn{background:#eef4e9;color:var(--primary-dark)}.ghost-btn{background:transparent;border:1px solid var(--border);color:var(--text)}.remove-btn{background:#fdecec;color:var(--danger);padding:10px 14px}.qty-btn{background:#eef4e9;color:var(--primary-dark);padding:10px 14px}
+    .section-card{max-width:900px;margin:0 auto 80px}.stack{display:grid;gap:12px}.add-row{display:grid;grid-template-columns:1fr 112px 140px;gap:10px}.field{width:100%;border:1px solid var(--border);border-radius:14px;padding:13px 14px;background:#fff;color:var(--text)}.search-results{display:grid;gap:8px}.search-option{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:12px;padding:11px 12px;text-align:left;cursor:pointer}.custom-list,.cart-list{display:grid;gap:12px}.line{border:1px solid var(--border);border-radius:16px;padding:14px;background:#fcfdfb}.line-top{display:flex;justify-content:space-between;gap:12px;align-items:start}.qty-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.muted{color:var(--muted)}
+    .panel{position:fixed;top:0;right:-100%;width:min(560px,100%);height:100dvh;background:#fff;box-shadow:-12px 0 38px rgba(16,24,40,.12);z-index:60;transition:right .28s ease;display:flex;flex-direction:column}.panel.open{right:0}.overlay{position:fixed;inset:0;background:rgba(15,23,42,.35);opacity:0;pointer-events:none;transition:.2s ease;z-index:50}.overlay.show{opacity:1;pointer-events:auto}.panel-header{padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:18px}.panel-content{padding:24px;overflow:auto;display:grid;gap:16px}.save-area{display:flex;gap:10px;padding:24px;border-top:1px solid var(--border);margin-top:auto}.close-btn{border:1px solid var(--border);background:#fff;width:42px;height:42px;border-radius:12px;cursor:pointer}
+    .empty{padding:24px;border-radius:18px;text-align:center;background:#fafcf9;border:1px dashed var(--border);color:var(--muted)}
+    @media (max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:720px){.grid,.add-row{grid-template-columns:1fr}.save-area{flex-direction:column}.panel{width:100%}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand"><div class="brand-badge">🥬</div><div class="brand-text"><strong>Oázis</strong><small>Webshop</small></div></div>
+      <nav class="nav-links">
+        <a class="nav-link active" href="index.html">Webshop</a>
+        <a class="nav-link" href="megrendeles.html">Megrendelés</a>
+        <a class="nav-link" href="fiokom.html">Fiókom</a>
+      </nav>
+      <div class="header-actions">
+        <a class="icon-btn" href="fiokom.html">👤 Fiókom</a>
+        <button class="icon-btn" id="cartBtn" type="button">🛒 Kosár <span class="badge" id="cartCount">0</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow">Friss, gyors, egyszerű</span>
+      <h1>Oázis Webshop</h1>
+      <p>Előre összeállított kosarak és saját kosár összeállítása. A minimum rendelési összeg 4 000 Ft.</p>
+    </section>
+    <section class="grid" id="basketGrid"></section>
+
+    <article class="card section-card">
+      <div class="card-top">
+        <span class="card-tag">Saját összeállítás</span>
+        <h2>Rakd össze a saját kosarad</h2>
+        <p class="card-desc">Csak a megadott terméklistából lehet hozzáadni, ékezettel vagy ékezet nélkül is.</p>
+      </div>
+      <div class="card-body">
+        <div><div class="price" id="customBasketTotal">0 Ft</div><div class="price-note">Minimum rendelés: 4 000 Ft</div></div>
+        <div class="stack">
+          <div class="add-row">
+            <input class="field" type="text" id="customProductName" placeholder="Pl. Voroshagyma" autocomplete="off" />
+            <input class="field" type="number" id="customProductQty" min="1" value="1" />
+            <button class="secondary-btn" id="addCustomProductBtn" type="button">+ Hozzáadom</button>
+          </div>
+          <div class="search-results" id="customSearchResults"></div>
+        </div>
+        <div class="custom-list" id="customBasketItems"></div>
+        <div class="card-actions" style="max-width:360px">
+          <button class="primary-btn" id="addCustomBasketToCartBtn" type="button">Saját kosár mentése</button>
+          <button class="ghost-btn" id="clearCustomBasketBtn" type="button">Kosár ürítése</button>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="panel" id="editPanel" aria-hidden="true">
+    <div class="panel-header"><div><h3 id="editTitle">Kosár módosítása</h3><p class="muted" id="editSub">Itt tudod átírni a kiválasztott kosár tartalmát.</p></div><button class="close-btn" type="button" data-close="editPanel">×</button></div>
+    <div class="panel-content" id="editContent"></div>
+    <div class="save-area"><button class="ghost-btn" type="button" data-close="editPanel">Mégse</button><button class="primary-btn" id="saveBasketBtn" type="button">Mentem a kosarat</button></div>
+  </aside>
+
+  <aside class="panel" id="cartPanel" aria-hidden="true">
+    <div class="panel-header"><div><h3>Kosár</h3><p class="muted">Itt látod, mit raktál bele.</p></div><button class="close-btn" type="button" data-close="cartPanel">×</button></div>
+    <div class="panel-content" id="cartContent"></div>
+    <div class="save-area"><button class="ghost-btn" type="button" data-close="cartPanel">Bezárás</button><a class="primary-btn" href="megrendeles.html" style="text-align:center;text-decoration:none">Tovább a megrendeléshez</a></div>
+  </aside>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const STORAGE_KEY = 'oazis_demo_state_v1';
+    const baseState = { cart: [], customBasketItems: [], appliedCoupon: null };
+    function loadState(){ try{return {...baseState,...JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}}catch{return {...baseState}} }
+    function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    const state = loadState();
+    state.editingBasketId = null; state.editingItems = [];
+
+    const basketTemplates = [
+      { id:'family', name:'Családi kosár', tag:'Legnépszerűbb', price:5990, description:'Vegyes, bőven pakolt alapcsomag hétköznapi főzéshez és nasizáshoz.', items:[{name:'Alma',qty:6},{name:'Banán',qty:5},{name:'Paradicsom',qty:4},{name:'Kápia paprika',qty:2},{name:'Uborka',qty:2}]},
+      { id:'vitamin', name:'Vitamin kosár', tag:'Frissítő', price:4990, description:'Citrusos, gyümölcsös csomag.', items:[{name:'Narancs',qty:6},{name:'Citrom',qty:4},{name:'Kiwi',qty:4},{name:'Alma',qty:4}]},
+      { id:'fozos', name:'Főzős kosár', tag:'Konyhakész', price:5490, description:'Főzéshez összerakott alapcsomag.', items:[{name:'Burgonya',qty:5},{name:'Vöröshagyma',qty:4},{name:'Sárgarépa',qty:4},{name:'Fokhagyma',qty:2},{name:'TV paprika',qty:3}]},
+      { id:'mini', name:'Mini kosár', tag:'Kisebb adag', price:3290, description:'Ha csak egy kisebb feltöltés kell.', items:[{name:'Alma',qty:3},{name:'Banán',qty:2},{name:'Paradicsom',qty:2}]}
+    ];
+    const allowedProducts=["Burgonya","Vöröshagyma","Lilahagyma","Fokhagyma","Zeller","Karalábé","Cukkini","Tök","Sárgarépa","Gyökér","Káposzta","Lilakáposzta","Kelkáposzta","Karfiol","TV paprika","Lecsópaprika","Hegyes erős paprika","Paradicsom","Uborka","Koktélparadicsom","Petrezselyem zöld","Kapor","Jégcsapretek","Hónapos retek","Sörretek","Zöldhagyma","Gomba","Saláta","Jégsaláta","Kaliforniai paprika","Kápia paprika","Bocskor paprika","Banán","Citrom","Mandarin","Narancs","Körte","Kiwi","Gyömbér","Alma","Tarkabab","Sárgaborsó","Lencse","Savanyú káposzta apró","Savanyú káposzta levél","Kis vödrös savanyúságok","Fűszerpaprika","Fűzérpaprika","Szatyor","Dió","Gyöngybab","Szőlő","Sonkahagyma","PCR paprika","Újburgonya","Nektarin","Sárgabarack","Őszibarack","Görögdinnye","Sárgadinnye","Kovászolni való uborka","Csemege kukorica","Szilva","Pritamin paprika","Narancs (apró)","Fűszerpaprika (erős)"];
+    const blockedWords=["fasz","geci","kurva","baszd","bazd","szar","picsa","faszom","anyad"];
+    const productUnits={"Saláta":"db","Jégsaláta":"db","Zeller":"db","Karalábé":"db","Savanyú káposzta apró":"csomag","Savanyú káposzta levél":"csomag","Kis vödrös savanyúságok":"csomag"};
+    const productPrices={"Burgonya":499,"Vöröshagyma":599,"Lilahagyma":799,"Fokhagyma":1990,"Zeller":899,"Karalábé":699,"Cukkini":899,"Tök":699,"Sárgarépa":499,"Gyökér":899,"Káposzta":399,"Lilakáposzta":499,"Kelkáposzta":699,"Karfiol":1199,"TV paprika":1399,"Lecsópaprika":999,"Hegyes erős paprika":1599,"Paradicsom":1199,"Uborka":999,"Koktélparadicsom":1990,"Petrezselyem zöld":299,"Kapor":299,"Jégcsapretek":699,"Hónapos retek":599,"Sörretek":899,"Zöldhagyma":399,"Gomba":1499,"Saláta":499,"Jégsaláta":699,"Kaliforniai paprika":1990,"Kápia paprika":1799,"Bocskor paprika":1399,"Banán":799,"Citrom":999,"Mandarin":999,"Narancs":799,"Körte":1199,"Kiwi":1499,"Gyömbér":2490,"Alma":599,"Tarkabab":1199,"Sárgaborsó":799,"Lencse":999,"Savanyú káposzta apró":1299,"Savanyú káposzta levél":1599,"Kis vödrös savanyúságok":1990,"Fűszerpaprika":2490,"Fűzérpaprika":1990,"Szatyor":150,"Dió":3990,"Gyöngybab":1299,"Szőlő":1499,"Sonkahagyma":999,"PCR paprika":1599,"Újburgonya":899,"Nektarin":1399,"Sárgabarack":1499,"Őszibarack":1399,"Görögdinnye":499,"Sárgadinnye":799,"Kovászolni való uborka":1299,"Csemege kukorica":399,"Szilva":1199,"Pritamin paprika":1599,"Narancs (apró)":699,"Fűszerpaprika (erős)":2790};
+    const CUSTOM_BASKET_MIN_TOTAL = 4000;
+    const allowedProductMap = new Map(allowedProducts.map(p=>[normalizeText(p),p]));
+
+    const basketGrid=document.getElementById('basketGrid'), overlay=document.getElementById('overlay'), editPanel=document.getElementById('editPanel'), cartPanel=document.getElementById('cartPanel'), editContent=document.getElementById('editContent'), editTitle=document.getElementById('editTitle'), editSub=document.getElementById('editSub'), cartContent=document.getElementById('cartContent'), cartCount=document.getElementById('cartCount'), toast=document.getElementById('toast'), customBasketItemsEl=document.getElementById('customBasketItems'), customBasketTotalEl=document.getElementById('customBasketTotal');
+    function normalizeText(v){return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim()}
+    function formatPrice(v){return new Intl.NumberFormat('hu-HU').format(Math.round(v))+' Ft'}
+    function cloneItems(items){return items.map(i=>({...i}))}
+    function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove('show'),2200)}
+    function openPanel(panel){overlay.classList.add('show');panel.classList.add('open')}
+    function closePanel(panel){panel.classList.remove('open');if(![editPanel,cartPanel].some(p=>p.classList.contains('open')))overlay.classList.remove('show')}
+    function closeAllPanels(){[editPanel,cartPanel].forEach(p=>p.classList.remove('open'));overlay.classList.remove('show')}
+    function updateCartCount(){cartCount.textContent=state.cart.length}
+
+    function renderCards(){basketGrid.innerHTML=basketTemplates.map(b=>`<article class="card"><div class="card-top"><span class="card-tag">${b.tag}</span><h2>${b.name}</h2><p class="card-desc">${b.description}</p></div><div class="card-body"><div><div class="price">${formatPrice(b.price)}</div><div class="price-note">Előre összeállított alapcsomag</div></div><ul class="preview-list">${b.items.slice(0,4).map(i=>`<li><span>${i.name}</span><strong>${i.qty} db</strong></li>`).join('')}</ul><div class="card-actions"><button class="primary-btn" onclick="addTemplateToCart('${b.id}')" type="button">Kosárba rakom</button><button class="secondary-btn" onclick="openEditPanel('${b.id}')" type="button">Terméklista módosítása</button></div></div></article>`).join('')}
+    function renderAddNewBox(){return `<div class="stack"><div class="add-row"><input class="field" type="text" id="newProductName" placeholder="Pl. Cukkini" autocomplete="off" /><input class="field" type="number" id="newProductQty" min="1" value="1" /><button class="secondary-btn" onclick="addNewProduct()" type="button">+ Hozzáadom</button></div><div class="search-results" id="editSearchResults"></div></div>`}
+    function openEditPanel(id){const basket=basketTemplates.find(b=>b.id===id); if(!basket) return; state.editingBasketId=id; state.editingItems=cloneItems(basket.items); editTitle.textContent=basket.name+' módosítása'; editSub.textContent='Állítsd be, miből mennyi legyen.'; renderEditItems(); openPanel(editPanel)}
+    function renderEditItems(){if(!state.editingItems.length){editContent.innerHTML=`<div class="empty">Ez a kosár most üres.</div>${renderAddNewBox()}`;return;} editContent.innerHTML=`${state.editingItems.map((item,index)=>`<div class="line"><div class="line-top"><div><strong>${item.name}</strong><div class="muted">Jelenlegi mennyiség: ${item.qty} db</div></div><div class="qty-controls"><button class="qty-btn" onclick="changeQty(${index},-1)" type="button">−</button><span>${item.qty}</span><button class="qty-btn" onclick="changeQty(${index},1)" type="button">+</button><button class="remove-btn" onclick="removeItem(${index})" type="button">Törlés</button></div></div></div>`).join('')}${renderAddNewBox()}`}
+    function changeQty(index,delta){if(!state.editingItems[index])return; state.editingItems[index].qty=Math.max(1,state.editingItems[index].qty+delta); renderEditItems()}
+    function removeItem(index){state.editingItems.splice(index,1); renderEditItems()}
+    function getSearchMatches(q){const n=normalizeText(q); if(!n) return []; return allowedProducts.filter(p=>normalizeText(p).includes(n)).slice(0,8)}
+    function renderSearchResults(containerId,matches,inputId){const c=document.getElementById(containerId); if(!c)return; c.innerHTML=!matches.length?'':matches.map(product=>`<button class="search-option" type="button" onclick="selectSuggestedProduct('${containerId}','${inputId}','${product.replace(/'/g,"&#39;")}')">${product}</button>`).join('')}
+    function selectSuggestedProduct(containerId,inputId,product){const i=document.getElementById(inputId), c=document.getElementById(containerId); if(i)i.value=product; if(c)c.innerHTML=''; i?.focus()}
+    function validateProductInput(raw){const normalized=normalizeText(raw); if(blockedWords.some(w=>normalized.includes(normalizeText(w)))) return {ok:false,message:'Trágár vagy nem megfelelő szöveg nem írható be.'}; if(!allowedProductMap.has(normalized)) return {ok:false,message:'Csak a megadott terméklistából lehet választani.'}; return {ok:true,canonicalName:allowedProductMap.get(normalized),normalizedName:normalized}}
+    function addNewProduct(){const nameInput=document.getElementById('newProductName'), qtyInput=document.getElementById('newProductQty'); const raw=nameInput?.value.trim()||'', qty=Number(qtyInput?.value||1); if(!raw)return showToast('Adj meg egy terméknevet.'); const v=validateProductInput(raw); if(!v.ok)return showToast(v.message); const existing=state.editingItems.find(i=>normalizeText(i.name)===v.normalizedName); if(existing)existing.qty+=Math.max(1,qty); else state.editingItems.push({name:v.canonicalName,qty:Math.max(1,qty)}); if(nameInput)nameInput.value=''; if(qtyInput)qtyInput.value='1'; renderEditItems(); showToast('Új termék hozzáadva.')}
+    function saveCustomizedBasket(){const basket=basketTemplates.find(b=>b.id===state.editingBasketId); if(!basket)return; state.cart.push({cartId:crypto.randomUUID(),sourceBasketId:basket.id,name:basket.name+' (egyedi)',basePrice:basket.price,items:cloneItems(state.editingItems)}); saveState(); updateCartCount(); renderCart(); closePanel(editPanel); openPanel(cartPanel); showToast('Egyedi kosár mentve a kosárba.')}
+    function addTemplateToCart(id){const b=basketTemplates.find(x=>x.id===id); if(!b)return; state.cart.push({cartId:crypto.randomUUID(),sourceBasketId:b.id,name:b.name,basePrice:b.price,items:cloneItems(b.items)}); saveState(); updateCartCount(); renderCart(); showToast(`${b.name} bekerült a kosárba.`)}
+    function removeCartItem(id){state.cart=state.cart.filter(i=>i.cartId!==id); saveState(); updateCartCount(); renderCart()}
+    function getCustomBasketTotal(){return state.customBasketItems.reduce((sum,item)=>sum+(productPrices[item.name]||0)*item.qty,0)}
+    function renderCustomBasket(){const total=getCustomBasketTotal(); customBasketTotalEl.textContent=formatPrice(total); if(!state.customBasketItems.length){customBasketItemsEl.innerHTML='<div class="empty">A saját kosár még üres.</div>'; return;} customBasketItemsEl.innerHTML=state.customBasketItems.map((item,index)=>{const unitPrice=productPrices[item.name]||0; return `<div class="line"><div class="line-top"><div><strong>${item.name}</strong><div class="muted">${formatPrice(unitPrice)} / ${productUnits[item.name]||'kg'} • Sor összesen: ${formatPrice(unitPrice*item.qty)}</div></div><button class="remove-btn" onclick="removeCustomBasketItem(${index})" type="button">Törlés</button></div><div class="qty-controls"><button class="qty-btn" onclick="changeCustomBasketQty(${index},-1)" type="button">−</button><span>${item.qty}</span><button class="qty-btn" onclick="changeCustomBasketQty(${index},1)" type="button">+</button></div></div>`}).join('')+`<div class="line"><div class="line-top"><strong>Jelenlegi összeg</strong><strong>${formatPrice(total)}</strong></div><div class="line-top"><span class="muted">Minimum szükséges</span><strong>${formatPrice(CUSTOM_BASKET_MIN_TOTAL)}</strong></div></div>`}
+    function addProductToCustomBasket(){const nameInput=document.getElementById('customProductName'), qtyInput=document.getElementById('customProductQty'); const raw=nameInput?.value.trim()||'', qty=Number(qtyInput?.value||1); if(!raw)return showToast('Adj meg egy terméknevet.'); const v=validateProductInput(raw); if(!v.ok)return showToast(v.message); const existing=state.customBasketItems.find(i=>normalizeText(i.name)===v.normalizedName); if(existing)existing.qty+=Math.max(1,qty); else state.customBasketItems.push({name:v.canonicalName,qty:Math.max(1,qty)}); if(nameInput)nameInput.value=''; if(qtyInput)qtyInput.value='1'; document.getElementById('customSearchResults').innerHTML=''; saveState(); renderCustomBasket(); showToast('Termék hozzáadva a saját kosárhoz.')}
+    function changeCustomBasketQty(index,delta){if(!state.customBasketItems[index])return; state.customBasketItems[index].qty=Math.max(1,state.customBasketItems[index].qty+delta); saveState(); renderCustomBasket()}
+    function removeCustomBasketItem(index){state.customBasketItems.splice(index,1); saveState(); renderCustomBasket()}
+    function clearCustomBasket(){state.customBasketItems=[]; saveState(); renderCustomBasket(); showToast('A saját kosár kiürítve.')}
+    function saveCustomBasketToCart(){const total=getCustomBasketTotal(); if(!state.customBasketItems.length)return showToast('Előbb rakj bele legalább egy terméket.'); if(total<CUSTOM_BASKET_MIN_TOTAL)return showToast(`A saját kosár minimum ${formatPrice(CUSTOM_BASKET_MIN_TOTAL)} értékben menthető.`); state.cart.push({cartId:crypto.randomUUID(),sourceBasketId:'custom',name:'Saját kosár',basePrice:total,items:cloneItems(state.customBasketItems)}); state.customBasketItems=[]; saveState(); updateCartCount(); renderCart(); renderCustomBasket(); showToast('Saját kosár mentve a kosárba.')}
+    function renderCart(){if(!state.cart.length){cartContent.innerHTML='<div class="empty">A kosár most még üres.</div>'; return;} const total=state.cart.reduce((sum,item)=>sum+item.basePrice,0); cartContent.innerHTML=`<div class="cart-list">${state.cart.map(item=>`<div class="line"><div class="line-top"><div><strong>${item.name}</strong><div class="muted">${formatPrice(item.basePrice)}</div></div><button class="remove-btn" onclick="removeCartItem('${item.cartId}')" type="button">Törlés</button></div><ul class="muted">${item.items.map(p=>`<li>${p.name} – ${p.qty}</li>`).join('')}</ul></div>`).join('')}</div><div class="line"><div class="line-top"><strong>Összes kosár</strong><strong>${state.cart.length} db</strong></div><div class="line-top"><strong>Végösszeg</strong><strong>${formatPrice(total)}</strong></div></div>`}
+
+    document.getElementById('saveBasketBtn').addEventListener('click',saveCustomizedBasket);
+    document.getElementById('cartBtn').addEventListener('click',()=>{renderCart();openPanel(cartPanel)});
+    document.getElementById('addCustomProductBtn').addEventListener('click',addProductToCustomBasket);
+    document.getElementById('customProductName').addEventListener('input',()=>renderSearchResults('customSearchResults',getSearchMatches(document.getElementById('customProductName').value),'customProductName'));
+    document.getElementById('addCustomBasketToCartBtn').addEventListener('click',saveCustomBasketToCart);
+    document.getElementById('clearCustomBasketBtn').addEventListener('click',clearCustomBasket);
+    overlay.addEventListener('click',closeAllPanels);
+    document.addEventListener('input',e=>{if(e.target?.id==='newProductName'){renderSearchResults('editSearchResults',getSearchMatches(e.target.value),'newProductName')}});
+    document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>{const panel=document.getElementById(btn.getAttribute('data-close')); if(panel)closePanel(panel)}));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAllPanels()});
+    renderCards(); renderCart(); renderCustomBasket(); updateCartCount();
+    window.openEditPanel=openEditPanel; window.changeQty=changeQty; window.removeItem=removeItem; window.addNewProduct=addNewProduct; window.addTemplateToCart=addTemplateToCart; window.removeCartItem=removeCartItem; window.changeCustomBasketQty=changeCustomBasketQty; window.removeCustomBasketItem=removeCustomBasketItem; window.selectSuggestedProduct=selectSuggestedProduct;
+  </script>
+</body>
+</html>
