@@ -186,6 +186,27 @@
       alert("Hiba történt: " + error.message);
     }
   });
+  import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+document.getElementById("testFirebase").addEventListener("click", async () => {
+
+  try {
+
+    await addDoc(collection(db, "orders"), {
+      test: "firebase teszt",
+      createdAt: new Date().toISOString()
+    });
+
+    alert("Firebase működik!");
+
+  } catch (error) {
+
+    console.error(error);
+    alert("Hiba: " + error.message);
+
+  }
+
+});
 </script>
   <button id="testFirebase">Firebase teszt</button>
 </body>
