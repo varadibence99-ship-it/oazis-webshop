@@ -174,7 +174,26 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 console.log("Firebase működik 🚀");
+document.getElementById("submitOrderTestBtn").addEventListener("click", async () => {
 
+  try {
+
+    await addDoc(collection(db, "orders"), {
+      test: "Ez egy teszt rendelés",
+      createdAt: new Date().toISOString()
+    });
+
+    alert("Rendelés elmentve Firebase-be 🚀");
+
+  } catch (error) {
+
+    console.error(error);
+    alert("Hiba történt");
+
+  }
+
+});
 </script>
+  
 </body>
 </html>
