@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oázis – Fiókom</title>
+  <style>
+    :root{--bg:#f6f8f3;--surface:#fff;--text:#1f2937;--muted:#6b7280;--primary:#2f7d32;--primary-dark:#256628;--accent:#dff1d8;--border:#e5e7eb;--warning:#b54708;--shadow:0 18px 40px rgba(16,24,40,.08);--radius:24px}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#f6f8f3 0%,#edf5e9 100%);color:var(--text)} .container{width:min(1100px,calc(100% - 32px));margin:0 auto}.field,button{font:inherit}
+    header{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);background:rgba(246,248,243,.82);border-bottom:1px solid rgba(229,231,235,.7)}.header-inner{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.brand{display:flex;gap:14px;align-items:center;font-weight:800}.brand-badge{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4caf50,#2f7d32);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow)}.brand-text small{display:block;color:var(--muted);font-weight:600}.nav-links{display:flex;gap:10px;flex-wrap:wrap}.nav-link{border:1px solid var(--border);background:#fff;color:var(--text);border-radius:999px;padding:12px 16px;text-decoration:none}.nav-link.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    main{padding:48px 0 80px}.section-head{margin-bottom:20px}.section-head h1{font-size:clamp(32px,5vw,52px);margin:0 0 8px}.section-head p{margin:0;color:var(--muted);line-height:1.7}
+    .grid2,.stats,.history{display:grid;gap:16px}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,minmax(0,1fr));margin:24px 0}.history{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:#fff;border:1px solid rgba(229,231,235,.85);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}.card h3{margin:0 0 12px}.field{width:100%;border:1px solid var(--border);border-radius:14px;padding:13px 14px;background:#fff;color:var(--text);margin-bottom:10px}.primary-btn{border:none;border-radius:14px;padding:14px 16px;font-weight:700;cursor:pointer;background:var(--primary);color:#fff}.muted{color:var(--muted)}.progress{height:14px;background:#e9eee4;border-radius:999px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,#6ac36f,#2f7d32)}.ok{color:var(--primary-dark);font-weight:700}.wait{color:var(--warning);font-weight:700}.stat strong{display:block;font-size:28px;margin-top:8px}.mini{border:1px solid var(--border);border-radius:16px;padding:14px;background:#fcfdfb;margin-top:12px}
+    @media (max-width:900px){.grid2,.stats,.history{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand"><div class="brand-badge">🥬</div><div class="brand-text"><strong>Oázis</strong><small>Fiókom</small></div></div>
+      <nav class="nav-links">
+        <a class="nav-link" href="index.html">Webshop</a>
+        <a class="nav-link" href="megrendeles.html">Megrendelés</a>
+        <a class="nav-link active" href="fiokom.html">Fiókom</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="section-head">
+      <h1>Fiókom</h1>
+      <p>Külön oldalon a regisztráció, az online költés, a kupon, az előző rendelések és az aktuális rendelés.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Regisztráció</h3>
+        <input class="field" type="text" placeholder="Teljes név" />
+        <input class="field" type="email" placeholder="Email cím" />
+        <input class="field" type="password" placeholder="Jelszó" />
+        <input class="field" type="date" />
+        <button class="primary-btn" type="button">Fiók létrehozása</button>
+        <p class="muted" style="margin-top:10px">A születési idő itt szerepel, a rendelési űrlapon nem.</p>
+      </div>
+      <div class="card">
+        <h3>Demó felhasználó</h3>
+        <p class="muted"><strong>Név:</strong> Kiss Minta<br><strong>Email:</strong> minta@oazis.hu<br><strong>Születési idő:</strong> 1999-05-14</p>
+      </div>
+    </div>
+
+    <div class="stats" id="statsBox"></div>
+    <div class="card" id="couponBox"></div>
+
+    <div class="history">
+      <div class="card"><h3>Korábbi rendelések</h3><div id="historyBox"></div></div>
+      <div class="card"><h3>Aktuális rendelés</h3><div id="currentBox"></div></div>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY='oazis_demo_state_v1';
+    const DEMO_ACCOUNT_KEY='oazis_demo_account_v1';
+    const COUPON_TARGET=30000;
+    const DEMO_COUPON={code:'OAZIS3000',discountPercent:10};
+    function formatPrice(v){return new Intl.NumberFormat('hu-HU').format(Math.round(v))+' Ft'}
+    function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}')}catch{return {}}}
+    function loadAccount(){
+      const fallback={name:'Kiss Minta',email:'minta@oazis.hu',birthDate:'1999-05-14',previousOrders:[{id:'R-1001',date:'2026-02-14',total:12990,items:['Családi kosár','2 kg Alma']},{id:'R-1002',date:'2026-02-26',total:8990,items:['Vitamin kosár','1 db Jégsaláta']},{id:'R-1003',date:'2026-03-02',total:11190,items:['Főzős kosár','1 kg Paradicsom']}],lastOrderPreview:null};
+      try{return {...fallback,...JSON.parse(localStorage.getItem(DEMO_ACCOUNT_KEY)||'{}')}}catch{return fallback}
+    }
+    const state=loadState(); const account=loadAccount();
+    const cart=state.cart||[];
+    const subtotal=cart.reduce((sum,item)=>sum+item.basePrice,0);
+    const discount=state.appliedCoupon?Math.round(subtotal*(state.appliedCoupon.discountPercent/100)):0;
+    const total=Math.max(0,subtotal-discount);
+    const spent=account.previousOrders.reduce((sum,order)=>sum+order.total,0);
+    const progress=Math.min(100,Math.round((spent/COUPON_TARGET)*100));
+    const couponReady=spent>=COUPON_TARGET;
+
+    document.getElementById('statsBox').innerHTML=`<div class="card stat"><span>Online rendelések száma</span><strong>${account.previousOrders.length} db</strong></div><div class="card stat"><span>Összes online költés</span><strong>${formatPrice(spent)}</strong></div><div class="card stat"><span>Aktuális kosár</span><strong>${formatPrice(total)}</strong></div>`;
+    document.getElementById('couponBox').innerHTML=`<h3>Kupon státusz</h3><div class="progress"><div class="progress-fill" style="width:${progress}%"></div></div><p class="muted" style="margin:10px 0 0">Kuponhatár: ${formatPrice(COUPON_TARGET)} • Jelenlegi teljesítés: ${formatPrice(spent)}</p>${couponReady?`<p class="ok">Megvan a 30 000 Ft-os küszöb. Aktív kupon: <strong>${DEMO_COUPON.code}</strong> (${DEMO_COUPON.discountPercent}% kedvezmény)</p>`:`<p class="wait">Még ${formatPrice(COUPON_TARGET-spent)} hiányzik a kuponhoz.</p>`}`;
+    document.getElementById('historyBox').innerHTML=account.previousOrders.map(order=>`<div class="mini"><strong>${order.id}</strong><div class="muted">Dátum: ${order.date}</div><div class="muted">Összeg: ${formatPrice(order.total)}</div><div class="muted">Tételek: ${order.items.join(', ')}</div></div>`).join('');
+    const current = account.lastOrderPreview || (cart.length?{items:cart,total}:{items:[],total:0});
+    document.getElementById('currentBox').innerHTML=current.items && current.items.length ? (Array.isArray(current.items[0]?.items) ? current.items.map(item=>`<div class="mini"><strong>${item.name}</strong><div class="muted">Összeg: ${formatPrice(item.basePrice)}</div><div class="muted">Tételek: ${item.items.map(p=>`${p.name} (${p.qty})`).join(', ')}</div></div>`).join('') : `<div class="mini"><div class="muted">Név: ${current.name||'-'}</div><div class="muted">Átvétel: ${current.date||'-'} ${current.time||''}</div><div class="muted">Fizetés: ${current.payment||'-'}</div><div class="muted">Végösszeg: ${formatPrice(current.total||0)}</div><div class="muted">Tételek: ${(current.items||[]).map(i=>i.name||i).join(', ')}</div></div>`) : '<p class="muted">Még nincs aktuális rendelés a kosárban.</p>';
+  </script>
+</body>
+</html>
